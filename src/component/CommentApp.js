@@ -8,7 +8,6 @@ class CommentApp extends Component{
         this.state={
             comments:[]
         };
-        this.handleSubmitComment = this.handleSubmitComment.bind(this);
     }
     handleSubmitComment(comment){
         if(!comment) return;
@@ -28,7 +27,7 @@ class CommentApp extends Component{
     render(){
         return(
             <div className='wrapper'>
-                <CommentInput onSubmit={this.handleSubmitComment} />
+                <CommentInput onSubmit={(e)=>this.handleSubmitComment(e)} />
                 <CommentList comments={this.state.comments} />
             </div>
         )
