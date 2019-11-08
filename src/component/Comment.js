@@ -1,27 +1,46 @@
 import React, {Component} from 'react'
+import PropTypes from 'prop-types'
 
 class Comment extends Component {
+    static propTypes = {
+        comment:PropTypes.object.isRequired,
+        onDeleteComment:PropTypes.func,
+        index:PropTypes.number
+    };
     constructor(props) {
-        super(props)
+        super(props);
         this.state={
             timeString:''
         }
     }
     componentWillMount(){
         this._updateTimeString();
-        this._timer = setInterval(this._updateTimeString.bind(this),5000)
+        this._timer = setInterval(this._updateTimeString.bind(this),5000);
     }
     componentWillUnmount(){
         clearInterval(this._timer);
     }
+    handleDeleteComment(){
+        if(this.props.onDeleteComment){
+            this.props.onDeleteComment(this.props.index);
+        }
+    }
     _updateTimeString(){
         const comment = this.props.comment;
-        const duration = (+Date.now() - comment.createdTime)/1000;
+        const duration = parseInt((+Date.now() - comment.createdTime)/1000);
         this.setState({
-            timeString:duration > 60
-                ? `${Math.round(duration/60)} 分钟前`
-                : `${Math.round(Math.max(duration,1))} 秒前`
+            timeString:this._formatTimeString(duration)
         })
+    }
+    _formatTimeString(s){
+        let day = parseInt(s / (60 * 60 * 24));
+        let hour = parseInt(s / (60 * 60));
+        let min = parseInt(s / 60);
+        let sec = Math.max(s,1);
+        return this._isShow(day,'天') || this._isShow(hour,'小时') || this._isShow(min,'分钟') || this._isShow(sec,'秒');
+    }
+    _isShow(n,str){
+        return n > 0 ? n + str + '前' : '';
     }
 
     render() {
@@ -31,6 +50,11 @@ class Comment extends Component {
                     <span>{this.props.comment.username}</span> :
                     <p>{this.props.comment.content}</p>
                     <span className='comment-createdtime'>{this.state.timeString}</span>
+                    <span
+                        onClick={(e)=>this.handleDeleteComment(e)}
+                        className='comment-delete'>
+                        删除
+                    </span>
                 </div>
             </div>
         )
