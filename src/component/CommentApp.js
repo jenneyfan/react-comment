@@ -1,52 +1,40 @@
-import React,{Component,PropTypes} from 'react';
+import React,{Component} from 'react';
 import CommentInput from './CommentInput';
 import CommentList from './CommentList';
 import WrapWithLoadData from './WrapWithLoadData';
 
 class CommentApp extends Component{
-    static propTypes = {
-        data:PropTypes.any,
-        saveData:PropTypes.func.isRequired
-    };
-    constructor(){
-        super();
-        this.state={
-            comments:this.props.data||[]
-        };
+    constructor(props) {
+        super(props);
+        this.state = { comments: props.data }
     }
-
-    handleDeleteComment(index){
-        const comments = this.state.comments;
-        comments.splice(index,1);
-        this.setState({comments});
-        this.props.saveData(comments);
-    }
-    handleSubmitComment(comment){
-        if(!comment) return;
-        if(!comment.username){
-            alert('请输入用户名');
-            return;
-        }
-        if(!comment.content){
-            alert('请输入内容');
-            return;
-        }
+    handleSubmitComment (comment) {
+        if (!comment) return;
+        if (!comment.username) return alert('请输入用户名');
+        if (!comment.content) return alert('请输入评论内容');
         const comments = this.state.comments;
         comments.push(comment);
-        this.setState({comments});
+        this.setState({ comments });
         this.props.saveData(comments);
     }
-    render(){
-        return(
+
+    handleDeleteComment (index) {
+        const comments = this.state.comments;
+        comments.splice(index, 1);
+        this.setState({ comments });
+        this.props.saveData(comments)
+    }
+
+    render() {
+        return (
             <div className='wrapper'>
-                <CommentInput onSubmit={(e)=>this.handleSubmitComment(e)} />
+                <CommentInput onSubmit={this.handleSubmitComment.bind(this)} />
                 <CommentList
                     comments={this.state.comments}
-                    onDeleteComment={(e)=>this.handleDeleteComment(e)}
-                />
+                    onDeleteComment={(e)=>this.handleDeleteComment(e)} />
             </div>
         )
     }
 }
-CommentApp = WrapWithLoadData(CommentApp,'comments')
+CommentApp = WrapWithLoadData(CommentApp, 'comments');
 export default CommentApp

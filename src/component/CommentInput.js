@@ -1,37 +1,25 @@
-import React, {Component} from 'react'
+import React, {Component} from 'react';
+import WrapWithLoadData from './WrapWithLoadData';
 
 class CommentInput extends Component {
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
         this.state={
-            username:'',
+            username:props.data,
             content:''
         };
     }
     // 挂载时读取用户名
     componentWillMount(){
-        this._loadUsername();
+        this.props.saveData(this.state.username);
     }
     // 自动聚焦
     componentDidMount(){
         this.textarea.focus();
     }
-    // 获取用户名
-    _loadUsername(){
-        const username = localStorage.getItem('username');
-        if(username){
-            this.setState({
-                username
-            })
-        }
-    }
-    // 用户名持久化
-    _saveUsername(username){
-        localStorage.setItem('username',username);
-    }
     // 失去焦点保存用户名
     handleUsernameBlur(e){
-        this._saveUsername(e.target.value);
+        this.props.saveData(e.target.value);
     }
     // 设置用户名
     handleUsernameChange(e){
@@ -90,5 +78,5 @@ class CommentInput extends Component {
         )
     }
 }
-
+CommentInput = WrapWithLoadData(CommentInput,'username');
 export default CommentInput

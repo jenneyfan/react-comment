@@ -1,24 +1,22 @@
-import React,{Component} from 'react'
-export default (WrappedComponent, name)=>{
-    class LocalStorageActions extends Component{
-        constructor(){
-            super();
-            this.state={
-                data:null
-            }
+import React, { Component } from 'react'
+export default (WrappedComponent, name) => {
+    class LocalStorageActions extends Component {
+        constructor(props){
+            super(props);
+            this.state={data: null}
         }
         componentWillMount(){
             let data = localStorage.getItem(name);
-            try{
+            try {
                 this.setState({data:JSON.parse(data)});
-            }catch (e){
+            }catch{
                 this.setState({data});
             }
         }
         saveData(data){
             try {
                 localStorage.setItem(name,JSON.stringify(data));
-            }catch (e){
+            }catch{
                 localStorage.setItem(name,`${data}`);
             }
         }
